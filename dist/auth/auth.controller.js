@@ -27,27 +27,53 @@ let AuthController = class AuthController {
     signin(dto) {
         return this.authService.signin(dto);
     }
+    async user(headers) {
+        const authorization = headers.authorization;
+        if (!authorization) {
+            throw new common_1.ForbiddenException('No token found');
+        }
+        const token = authorization.split(' ')[1];
+        const userId = this.authService.verifyJWT(token);
+        if (!userId) {
+            throw new common_1.ForbiddenException('Invalid token');
+        }
+        const user = await userId.then(userId => this.authService.user(userId.sub));
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        return user;
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('signup'),
-    (0, swagger_1.ApiOkResponse)({ type: dto_1.AuthDto }),
+    (0, swagger_1.ApiOkResponse)({ type: dto_1.SignupDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.AuthDto]),
+    __metadata("design:paramtypes", [dto_1.SignupDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signup", null);
 __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('signin'),
-    (0, swagger_1.ApiOkResponse)({ type: dto_1.AuthDto }),
+    (0, swagger_1.ApiOkResponse)({ type: dto_1.SigninDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.AuthDto]),
+    __metadata("design:paramtypes", [dto_1.SigninDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signin", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Get)('user'),
+    (0, swagger_1.ApiOkResponse)({ type: dto_1.SignupDto }),
+    __param(0, (0, common_1.Headers)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "user", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
+    (0, swagger_1.ApiTags)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

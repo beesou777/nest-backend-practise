@@ -74,6 +74,28 @@ let AuthService = class AuthService {
             access_token: token,
         };
     }
+    async user(userId) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+        if (!user)
+            throw new common_1.ForbiddenException('User not found');
+        delete user.password;
+        return user;
+    }
+    async verifyJWT(token) {
+        try {
+            const decoded = await this.jwt.verifyAsync(token, {
+                secret: this.config.get('JWT_SECRET'),
+            });
+            return decoded;
+        }
+        catch (error) {
+            return null;
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

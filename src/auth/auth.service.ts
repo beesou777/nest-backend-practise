@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto';
+import { SignupDto, SigninDto } from './dto'; // Update imports
 import * as argon2 from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -15,19 +15,19 @@ export class AuthService {
         private config: ConfigService
     ) {}
 
-    async signup(dto: AuthDto): Promise<User> {
+    async signup(dto: SignupDto): Promise<User> {
         const hash = await argon2.hash(dto.password);
     
         try {
             const user = await this.prisma.user.create({
                 data: {
-                    name: dto.name, // Include the name from the AuthDto
+                    name: dto.name,
                     email: dto.email,
                     password: hash,
-                    role: Role.Supplier, // Use the enum value for role
+                    role: Role.Supplier,
                 },
             });
-            delete user.password; // Do not return the password hash
+            delete user.password;
     
             return user;
         } catch (error) {
@@ -39,8 +39,8 @@ export class AuthService {
             throw error;
         }
     }
-    
-    async signin(dto: AuthDto) {
+
+    async signin(dto: SigninDto) {
         const user = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,
@@ -72,5 +72,28 @@ export class AuthService {
         return {
             access_token: token,
         };
+    }
+
+    async user(userId: number) {
+        const user = await this.prisma.user.findUnique({
+            where:{
+                id:userId
+            }
+        })
+
+        if(!user) throw new ForbiddenException('User not found')
+        delete user.password
+        return user
+    }
+
+    async verifyJWT(token: string) {
+        try {
+            const decoded = await this.jwt.verifyAsync(token, {
+                secret: this.config.get('JWT_SECRET'),
+            });
+            return decoded;
+        } catch (error) {
+            return null;
+        }
     }
 }
