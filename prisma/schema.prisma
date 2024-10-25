@@ -1,200 +1,85 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") // PostgreSQL connection URL
 }
 
-// Users Table
 model User {
   id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(255)
-  email       String    @unique @db.VarChar(255)
-  password    String    @db.VarChar(255)
-  role        Role      @default(Supplier)
-  contactInfo String?   @db.VarChar(255)
+  email       String    @unique
+  password    String
+  name        String
+  role        UserRole  // Organizer or Attendee
+  companyName String?   // Nullable for attendees
+  events      Event[]   @relation("EventOrganizer")
+  savedEvents SavedEvent[]
   createdAt   DateTime  @default(now())
-
-  Admin       Admin?
-  Supplier    Supplier?
-  Organizer   Organizer?
-  Review      Review[]
+  updatedAt   DateTime  @updatedAt
+  feedback    Feedback[]
 }
 
-// Enum for Role
-enum Role {
-  Admin
-  Supplier
-  Organizer
+enum UserRole {
+  ORGANIZER
+  ATTENDEE
 }
 
-// Admins Table
-model Admin {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @unique
-  privileges Json
-  createdAt  DateTime @default(now())
-
-  user       User     @relation(fields: [userId], references: [id])
-  reports      Report[]
-}
-
-// Suppliers Table
-model Supplier {
-  id               Int      @id @default(autoincrement())
-  userId           Int      @unique
-  companyName      String   @db.VarChar(255)
-  location         String   @db.VarChar(255)
-  serviceCategoryId Int
-  rating           Decimal    @db.Decimal(2,1)
-  profile          String?
-  createdAt        DateTime @default(now())
-
-  user             User     @relation(fields: [userId], references: [id])
-  serviceCategory  ServiceCategory @relation(fields: [serviceCategoryId], references: [id])
-  listings         Listing[]
-  bids             Bid[]
-  bookings         Booking[]
-}
-
-// Organizers Table
-model Organizer {
-  id              Int      @id @default(autoincrement())
-  userId          Int      @unique
-  companyName     String   @db.VarChar(255)
-  eventPreferences String?
-  budget          Decimal    @db.Decimal(10, 2)
-  createdAt       DateTime @default(now())
-
-  user            User     @relation(fields: [userId], references: [id])
-  events          Event[]
-  bookings        Booking[]
-  bids            Bid[]
-}
-
-// Events Table
 model Event {
-  id              Int      @id @default(autoincrement())
-  organizerId     Int
-  eventType       String   @db.VarChar(255)
-  date            DateTime
-  location        String   @db.VarChar(255)
-  guestCount      Int
-  budget          Decimal    @db.Decimal(10,2)
-  specialRequests String?
-  createdAt       DateTime @default(now())
-
-  organizer       Organizer @relation(fields: [organizerId], references: [id])
-  bids            Bid[]
-  bookings        Booking[]
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  date        DateTime
+  time        String
+  venue       String
+  organizer   User       @relation("EventOrganizer", fields: [organizerId], references: [id])
+  organizerId Int
+  category    Category   @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  location    Location   @relation(fields: [locationId], references: [id])
+  locationId  Int
+  attendees   SavedEvent[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  feedback    Feedback[]
 }
 
-// Listings Table
-model Listing {
-  id               Int      @id @default(autoincrement())
-  supplierId       Int
-  serviceType      String   @db.VarChar(255)
-  location         String   @db.VarChar(255)
-  availability     DateTime
-  pricing          Decimal    @db.Decimal(10,2)
-  photos           String[]
-  cancellationPolicy String?
-  createdAt        DateTime @default(now())
-
-  supplier         Supplier @relation(fields: [supplierId], references: [id])
-  bids             Bid[]
-  bookings         Booking[]
+model Category {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  events    Event[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// Bids Table
-model Bid {
-  id           Int      @id @default(autoincrement())
-  listingId    Int
-  eventId      Int
-  supplierId   Int
-  organizerId  Int
-  bidAmount    Decimal    @db.Decimal(10,2)
-  bidStatus    String   @default("Submitted")
-  createdAt    DateTime @default(now())
-
-  listing      Listing   @relation(fields: [listingId], references: [id])
-  event        Event     @relation(fields: [eventId], references: [id])
-  supplier     Supplier  @relation(fields: [supplierId], references: [id])
-  organizer    Organizer @relation(fields: [organizerId], references: [id])
+model Location {
+  id        Int      @id @default(autoincrement())
+  city      String
+  state     String
+  country   String
+  events    Event[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-// Bookings Table
-model Booking {
-  id            Int      @id @default(autoincrement())
-  listingId     Int
-  eventId       Int
-  supplierId    Int
-  organizerId   Int
-  bookingDate   DateTime
-  amount        Decimal    @db.Decimal(10,2)
-  paymentStatus String   @default("Pending")
-  bookingStatus String   @default("Pending")
-  createdAt     DateTime @default(now())
-
-  listing       Listing   @relation(fields: [listingId], references: [id])
-  event         Event     @relation(fields: [eventId], references: [id])
-  supplier      Supplier  @relation(fields: [supplierId], references: [id])
-  organizer     Organizer @relation(fields: [organizerId], references: [id])
-  payments      Payment[]
-  reviews       Review[]
-
+model SavedEvent {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
 }
 
-// Payments Table
-model Payment {
-  id            Int      @id @default(autoincrement())
-  bookingId     Int
-  paymentMethod String   @db.VarChar(50)
-  amountPaid    Decimal    @db.Decimal(10,2)
-  paymentDate   DateTime
-  paymentStatus String   @default("Pending")
-  createdAt     DateTime @default(now())
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+  rating    Int      // Rating scale (1-5)
+  comment   String?
+  createdAt DateTime @default(now())
 
-  booking       Booking  @relation(fields: [bookingId], references: [id])
-}
-
-// Service Categories Table
-model ServiceCategory {
-  id          Int      @id @default(autoincrement())
-  categoryName String  @db.VarChar(255)
-  createdAt   DateTime @default(now())
-
-  suppliers   Supplier[]
-}
-
-// Reviews Table
-model Review {
-  id          Int      @id @default(autoincrement())
-  bookingId   Int
-  rating      Decimal    @db.Decimal(2,1)
-  feedback    String?
-  reviewerId  Int
-  reviewDate  DateTime
-  createdAt   DateTime @default(now())
-
-  booking     Booking  @relation(fields: [bookingId], references: [id])
-  reviewer    User     @relation(fields: [reviewerId], references: [id])
-}
-
-// Reports Table
-model Report {
-  id          Int      @id @default(autoincrement())
-  reportType  String   @db.VarChar(50)
-  reportData  Json
-  generatedBy Int
-  createdAt   DateTime @default(now())
-  admin       Admin    @relation(fields: [generatedBy], references: [id])
 }

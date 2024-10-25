@@ -1,63 +1,71 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateEventInput } from './dto/create-event.input';
-import { UpdateEventInput } from './dto/update-event.input';
+import { CreateEventDto } from './dto/create-evnet.dto';
 export declare class EventsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    createEvent(createEventInput: CreateEventInput, organizerId: number): Promise<{
+    create(data: CreateEventDto): Promise<{
         id: number;
-        organizerId: number;
-        eventType: string;
+        name: string;
+        description: string;
         date: Date;
-        location: string;
-        guestCount: number;
-        budget: import("@prisma/client/runtime/library").Decimal;
-        specialRequests: string | null;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
         createdAt: Date;
+        updatedAt: Date;
     }>;
-    updateEvent(updateEventInput: UpdateEventInput): Promise<{
+    findAll(): Promise<{
         id: number;
-        organizerId: number;
-        eventType: string;
+        name: string;
+        description: string;
         date: Date;
-        location: string;
-        guestCount: number;
-        budget: import("@prisma/client/runtime/library").Decimal;
-        specialRequests: string | null;
-        createdAt: Date;
-    }>;
-    deleteEvent(id: number): Promise<boolean>;
-    getEvent(id: number): Promise<{
-        id: number;
+        time: string;
+        venue: string;
         organizerId: number;
-        eventType: string;
-        date: Date;
-        location: string;
-        guestCount: number;
-        budget: import("@prisma/client/runtime/library").Decimal;
-        specialRequests: string | null;
+        categoryId: number;
+        locationId: number;
         createdAt: Date;
-    }>;
-    getEvents(): Promise<{
-        id: number;
-        organizerId: number;
-        eventType: string;
-        date: Date;
-        location: string;
-        guestCount: number;
-        budget: import("@prisma/client/runtime/library").Decimal;
-        specialRequests: string | null;
-        createdAt: Date;
+        updatedAt: Date;
     }[]>;
-    searchEvents(searchTerm: string): Promise<{
+    findOne(id: number): Promise<{
         id: number;
-        organizerId: number;
-        eventType: string;
+        name: string;
+        description: string;
         date: Date;
-        location: string;
-        guestCount: number;
-        budget: import("@prisma/client/runtime/library").Decimal;
-        specialRequests: string | null;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
         createdAt: Date;
-    }[]>;
+        updatedAt: Date;
+    }>;
+    update(id: number, data: Partial<CreateEventDto>): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    delete(id: number): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

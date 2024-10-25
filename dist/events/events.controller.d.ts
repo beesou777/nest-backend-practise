@@ -1,8 +1,71 @@
 import { EventsService } from './events.service';
-export declare class EventsResolver {
+import { CreateEventDto } from './dto/create-evnet.dto';
+export declare class EventsController {
     private readonly eventsService;
     constructor(eventsService: EventsService);
-    createEvent(title: string, description: string): Promise<boolean>;
-    deleteEvent(id: number): Promise<boolean>;
-    events(): Promise<any[]>;
+    create(data: CreateEventDto): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findAll(): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    findOne(id: number): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    update(id: number, data: Partial<CreateEventDto>): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    delete(id: number): Promise<{
+        id: number;
+        name: string;
+        description: string;
+        date: Date;
+        time: string;
+        venue: string;
+        organizerId: number;
+        categoryId: number;
+        locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

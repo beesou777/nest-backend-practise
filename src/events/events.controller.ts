@@ -1,37 +1,33 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { UseGuards } from '@nestjs/common';
-import { RolesGuard } from '../auth/guard/roles.guard';
-import { Roles } from '../auth/decorator/roles.decorator';
-import { Role } from '@prisma/client';
+import { CreateEventDto } from './dto/create-evnet.dto';
 
-@Resolver()
-export class EventsResolver {
+@Controller('events')
+export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  @Mutation(() => Boolean)
-  @Roles(Role.Organizer)
-  @UseGuards(RolesGuard)
-  async createEvent(
-    @Args('title') title: string,
-    @Args('description') description: string,
-    // Add other event fields
-  ) {
-    // Call service method to create event
-    return true;
+  @Post()
+  create(@Body() data: CreateEventDto) {
+    return this.eventsService.create(data);
   }
 
-  @Mutation(() => Boolean)
-  @Roles(Role.Organizer)
-  @UseGuards(RolesGuard)
-  async deleteEvent(@Args('id') id: number) {
-    // Call service method to delete event
-    return true;
+  @Get()
+  findAll() {
+    return this.eventsService.findAll();
   }
 
-  @Query(() => [Event])
-  async events() {
-    // Call service method to get events
-    return [];
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.eventsService.findOne(+id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() data: Partial<CreateEventDto>) {
+    return this.eventsService.update(+id, data);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.eventsService.delete(+id);
   }
 }

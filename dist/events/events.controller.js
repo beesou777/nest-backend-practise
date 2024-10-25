@@ -12,55 +12,68 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventsResolver = void 0;
-const graphql_1 = require("@nestjs/graphql");
-const events_service_1 = require("./events.service");
+exports.EventsController = void 0;
 const common_1 = require("@nestjs/common");
-const roles_guard_1 = require("../auth/guard/roles.guard");
-const roles_decorator_1 = require("../auth/decorator/roles.decorator");
-const client_1 = require("@prisma/client");
-let EventsResolver = class EventsResolver {
+const events_service_1 = require("./events.service");
+const create_evnet_dto_1 = require("./dto/create-evnet.dto");
+let EventsController = class EventsController {
     constructor(eventsService) {
         this.eventsService = eventsService;
     }
-    async createEvent(title, description) {
-        return true;
+    create(data) {
+        return this.eventsService.create(data);
     }
-    async deleteEvent(id) {
-        return true;
+    findAll() {
+        return this.eventsService.findAll();
     }
-    async events() {
-        return [];
+    findOne(id) {
+        return this.eventsService.findOne(+id);
+    }
+    update(id, data) {
+        return this.eventsService.update(+id, data);
+    }
+    delete(id) {
+        return this.eventsService.delete(+id);
     }
 };
-exports.EventsResolver = EventsResolver;
+exports.EventsController = EventsController;
 __decorate([
-    (0, graphql_1.Mutation)(() => Boolean),
-    (0, roles_decorator_1.Roles)(client_1.Role.Organizer),
-    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, graphql_1.Args)('title')),
-    __param(1, (0, graphql_1.Args)('description')),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], EventsResolver.prototype, "createEvent", null);
+    __metadata("design:paramtypes", [create_evnet_dto_1.CreateEventDto]),
+    __metadata("design:returntype", void 0)
+], EventsController.prototype, "create", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => Boolean),
-    (0, roles_decorator_1.Roles)(client_1.Role.Organizer),
-    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __param(0, (0, graphql_1.Args)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], EventsResolver.prototype, "deleteEvent", null);
-__decorate([
-    (0, graphql_1.Query)(() => [Event]),
+    (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], EventsResolver.prototype, "events", null);
-exports.EventsResolver = EventsResolver = __decorate([
-    (0, graphql_1.Resolver)(),
+    __metadata("design:returntype", void 0)
+], EventsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], EventsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", void 0)
+], EventsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], EventsController.prototype, "delete", null);
+exports.EventsController = EventsController = __decorate([
+    (0, common_1.Controller)('events'),
     __metadata("design:paramtypes", [events_service_1.EventsService])
-], EventsResolver);
+], EventsController);
 //# sourceMappingURL=events.controller.js.map

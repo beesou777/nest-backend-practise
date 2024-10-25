@@ -16,53 +16,20 @@ let EventsService = class EventsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async createEvent(createEventInput, organizerId) {
-        const { tickets, ...eventData } = createEventInput;
-        const event = await this.prisma.event.create({
-            data: {
-                ...eventData,
-                organizer: { connect: { id: organizerId } },
-                tickets: {
-                    create: tickets,
-                },
-            },
-        });
-        return event;
+    async create(data) {
+        return this.prisma.event.create({ data });
     }
-    async updateEvent(updateEventInput) {
-        const { id, tickets, ...eventData } = updateEventInput;
-        const event = await this.prisma.event.update({
-            where: { id },
-            data: {
-                ...eventData,
-                tickets: {
-                    deleteMany: { eventId: id },
-                    create: tickets,
-                },
-            },
-        });
-        return event;
-    }
-    async deleteEvent(id) {
-        await this.prisma.event.delete({ where: { id } });
-        return true;
-    }
-    async getEvent(id) {
-        return this.prisma.event.findUnique({ where: { id } });
-    }
-    async getEvents() {
+    async findAll() {
         return this.prisma.event.findMany();
     }
-    async searchEvents(searchTerm) {
-        return this.prisma.event.findMany({
-            where: {
-                OR: [
-                    { title: { contains: searchTerm, mode: 'insensitive' } },
-                    { description: { contains: searchTerm, mode: 'insensitive' } },
-                    { venue: { contains: searchTerm, mode: 'insensitive' } },
-                ],
-            },
-        });
+    async findOne(id) {
+        return this.prisma.event.findUnique({ where: { id } });
+    }
+    async update(id, data) {
+        return this.prisma.event.update({ where: { id }, data });
+    }
+    async delete(id) {
+        return this.prisma.event.delete({ where: { id } });
     }
 };
 exports.EventsService = EventsService;
