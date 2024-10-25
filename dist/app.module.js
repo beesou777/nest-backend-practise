@@ -15,12 +15,17 @@ const categories_module_1 = require("./categories/categories.module");
 const locations_module_1 = require("./locations/locations.module");
 const feedbacks_module_1 = require("./feedbacks/feedbacks.module");
 const config_1 = require("@nestjs/config");
+const throttler_1 = require("@nestjs/throttler");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            throttler_1.ThrottlerModule.forRoot([{
+                    ttl: 60000,
+                    limit: 10,
+                }]),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),

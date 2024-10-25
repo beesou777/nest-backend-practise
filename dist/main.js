@@ -13,15 +13,11 @@ async function bootstrap() {
         crossOriginResourcePolicy: false,
         hidePoweredBy: true,
     }));
-    var allowlist = ['http://localhost:3000', 'http://localhost:5173', 'https://eventeir.ai'];
-    var corsOptionsDelegate = function (req, callback) {
-        var corsOptions;
-        if (allowlist.indexOf(req.header('Origin')) !== -1) {
-            corsOptions = { origin: true };
-        }
-        else {
-            corsOptions = { origin: false };
-        }
+    const allowlist = ['http://localhost:3000', 'http://localhost:5173', 'https://eventeir.ai'];
+    const corsOptionsDelegate = (req, callback) => {
+        const corsOptions = allowlist.indexOf(req.header('Origin')) !== -1
+            ? { origin: true }
+            : { origin: false };
         callback(null, corsOptions);
     };
     app.enableCors(corsOptionsDelegate);
