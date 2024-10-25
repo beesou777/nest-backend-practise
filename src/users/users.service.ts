@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto, SigninUserDto } from './dto';
+import { CreateUserDto, SigninUserDto,UpdateUserDto } from './dto';
 import * as argon2 from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -82,31 +82,27 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    return this.prisma.user.findMany();
-  }
-
-  async findOne(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where:{
-        id:userId
-      }
-    })
-    if(!user) throw new ForbiddenException('User not found')
-    delete user.password
-    return user
-  }
-
-  async updateUser(id: number, data: Partial<CreateUserDto>) {
+  async updateUser(id: number, data: Partial<UpdateUserDto>) {
+    if(!id && data) throw new ForbiddenException('User ID not found')
+      const updateData = {
+        ...(data.name && { name: data.name }),
+        ...(data.companyName && { companyName: data.companyName }),
+      };
     return this.prisma.user.update({
       where: { id },
-      data,
+      data: updateData,
     });
   }
 
-  async deleteUser(id: number) {
-    return this.prisma.user.delete({
-      where: { id },
+  async getUserProfile(userId: number) {
+    const profile = await this.prisma.user.findUnique({
+      where: { id: userId },
     });
+
+    if(!profile) throw new ForbiddenException('User not found')
+    delete profile.password
+
+    return profile
   }
 }
+ 

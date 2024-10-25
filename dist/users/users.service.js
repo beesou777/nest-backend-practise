@@ -86,30 +86,26 @@ let UsersService = class UsersService {
             return null;
         }
     }
-    async findAll() {
-        return this.prisma.user.findMany();
-    }
-    async findOne(userId) {
-        const user = await this.prisma.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
-        if (!user)
-            throw new common_1.ForbiddenException('User not found');
-        delete user.password;
-        return user;
-    }
     async updateUser(id, data) {
+        if (!id && data)
+            throw new common_1.ForbiddenException('User ID not found');
+        const updateData = {
+            ...(data.name && { name: data.name }),
+            ...(data.companyName && { companyName: data.companyName }),
+        };
         return this.prisma.user.update({
             where: { id },
-            data,
+            data: updateData,
         });
     }
-    async deleteUser(id) {
-        return this.prisma.user.delete({
-            where: { id },
+    async getUserProfile(userId) {
+        const profile = await this.prisma.user.findUnique({
+            where: { id: userId },
         });
+        if (!profile)
+            throw new common_1.ForbiddenException('User not found');
+        delete profile.password;
+        return profile;
     }
 };
 exports.UsersService = UsersService;

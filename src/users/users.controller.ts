@@ -1,13 +1,13 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto,SigninUserDto } from './dto';
+import { CreateUserDto,SigninUserDto, UpdateUserDto } from './dto';
 import { AuthGuard } from './guards/auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   createUser(@Body() data: CreateUserDto) {
     return this.usersService.createUser(data);
@@ -19,28 +19,22 @@ export class UsersController {
     return this.usersService.signIn(dto);
   }
 
+
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Get('all')
-  findAll() {
-    return this.usersService.findAll();
+  @Get('profile')
+  getProfile(@Req() req: Record<string, any>): Promise<any> {
+      const userId = req?.user.sub;
+      if (!userId) throw new UnauthorizedException("User ID not found");
+      return this.usersService.getUserProfile(+userId);
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @UseGuards(AuthGuard)
-  @Put(':id')
-  updateUser(@Param('id') id: string, @Body() data: Partial<CreateUserDto>) {
-    return this.usersService.updateUser(+id, data);
-  }
-
-  @UseGuards(AuthGuard)
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.deleteUser(+id);
+  @HttpCode(HttpStatus.CREATED)
+  @Put('update')
+  updateUser(@Req() req : Record<string, any>, @Body() data: Partial<UpdateUserDto>) {
+    const userId = req?.user.sub;
+    if (!userId) throw new UnauthorizedException("User ID not found");
+    return this.usersService.updateUser(+userId, data);
   }
 }

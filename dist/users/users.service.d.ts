@@ -1,5 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto, SigninUserDto } from './dto';
+import { CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 export declare class UsersService {
@@ -8,12 +8,12 @@ export declare class UsersService {
     private config;
     constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService);
     createUser(data: CreateUserDto): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -24,43 +24,23 @@ export declare class UsersService {
         access_token: string;
     }>;
     verifyToken(token: string): Promise<any>;
-    findAll(): Promise<{
+    updateUser(id: number, data: Partial<UpdateUserDto>): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-    }[]>;
-    findOne(userId: number): Promise<{
-        email: string;
-        password: string;
-        name: string;
         companyName: string | null;
-        role: import(".prisma/client").$Enums.UserRole;
-        id: number;
         createdAt: Date;
         updatedAt: Date;
     }>;
-    updateUser(id: number, data: Partial<CreateUserDto>): Promise<{
+    getUserProfile(userId: number): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-    }>;
-    deleteUser(id: number): Promise<{
-        email: string;
-        password: string;
-        name: string;
         companyName: string | null;
-        role: import(".prisma/client").$Enums.UserRole;
-        id: number;
         createdAt: Date;
         updatedAt: Date;
     }>;

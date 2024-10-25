@@ -27,22 +27,22 @@ let UsersController = class UsersController {
     signIn(dto) {
         return this.usersService.signIn(dto);
     }
-    findAll() {
-        return this.usersService.findAll();
+    getProfile(req) {
+        const userId = req?.user.sub;
+        if (!userId)
+            throw new common_1.UnauthorizedException("User ID not found");
+        return this.usersService.getUserProfile(+userId);
     }
-    findOne(id) {
-        return this.usersService.findOne(+id);
-    }
-    updateUser(id, data) {
-        return this.usersService.updateUser(+id, data);
-    }
-    deleteUser(id) {
-        return this.usersService.deleteUser(+id);
+    updateUser(req, data) {
+        const userId = req?.user.sub;
+        if (!userId)
+            throw new common_1.UnauthorizedException("User ID not found");
+        return this.usersService.updateUser(+userId, data);
     }
 };
 exports.UsersController = UsersController;
 __decorate([
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     (0, common_1.Post)('signup'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -60,36 +60,22 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, common_1.Get)('all'),
+    (0, common_1.Get)('profile'),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "findAll", null);
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.Put)('update'),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUser", null);
-__decorate([
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "deleteUser", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
