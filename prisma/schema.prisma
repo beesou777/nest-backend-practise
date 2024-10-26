@@ -21,12 +21,23 @@ model User {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   feedback    Feedback[]
+  resetPasswordToken ResetPasswordToken?
 }
 
 enum UserRole {
   ORGANIZER
   ATTENDEE
 }
+
+model ResetPasswordToken {
+  id        Int     @id @default(autoincrement())
+  token     String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  userId    Int     @unique
+  isValid   Boolean @default(true)
+}
+
 
 model Event {
   id          Int        @id @default(autoincrement())

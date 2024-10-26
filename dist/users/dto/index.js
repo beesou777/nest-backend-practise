@@ -18,4 +18,6 @@ __exportStar(require("./create-user.dto"), exports);
 __exportStar(require("./signin-user.dto"), exports);
 __exportStar(require("./update-user.dto"), exports);
 __exportStar(require("./change-password.dto"), exports);
+__exportStar(require("./forgot-password.dto"), exports);
+__exportStar(require("./reset-pasword.dto"), exports);
 //# sourceMappingURL=index.js.map

@@ -12,18 +12,21 @@ const users_controller_1 = require("./users.controller");
 const users_service_1 = require("./users.service");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./utility/constants");
+const send_reset_password_1 = require("./services/send-reset-password");
 let UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule;
 exports.UsersModule = UsersModule = __decorate([
     (0, common_1.Module)({
-        imports: [jwt_1.JwtModule.register({
+        imports: [
+            jwt_1.JwtModule.register({
                 global: true,
                 secret: constants_1.jwtConstants.secret,
                 signOptions: { expiresIn: '7d' },
-            })],
+            }),
+        ],
         controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService]
+        providers: [users_service_1.UsersService, send_reset_password_1.MailService]
     })
 ], UsersModule);
 //# sourceMappingURL=users.module.js.map

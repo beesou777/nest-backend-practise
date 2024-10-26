@@ -45,6 +45,14 @@ let UsersController = class UsersController {
             throw new common_1.UnauthorizedException("User ID not found");
         return this.usersService.changePassword(+userId, data);
     }
+    forgotPassword(dto) {
+        if (!dto.email)
+            throw new common_1.UnauthorizedException("User does not exist");
+        return this.usersService.forgotPassword(dto);
+    }
+    resetPassword(dto) {
+        return this.usersService.resetPassword(dto);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -92,6 +100,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, dto_1.ChangePasswordDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.ResetPassword]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "resetPassword", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

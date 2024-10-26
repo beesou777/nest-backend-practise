@@ -16,11 +16,14 @@ const argon2 = require("argon2");
 const library_1 = require("@prisma/client/runtime/library");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const uuid_1 = require("uuid");
+const send_reset_password_1 = require("./services/send-reset-password");
 let UsersService = class UsersService {
-    constructor(prisma, jwt, config) {
+    constructor(prisma, jwt, config, mailService) {
         this.prisma = prisma;
         this.jwt = jwt;
         this.config = config;
+        this.mailService = mailService;
     }
     async createUser(data) {
         try {
@@ -128,12 +131,52 @@ let UsersService = class UsersService {
         delete (await updateUser).password;
         return updateUser;
     }
+    async forgotPassword(dto) {
+        if (!dto.email)
+            throw new common_1.ForbiddenException('Email not found');
+        const token = (0, uuid_1.v4)();
+        const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+        if (!user)
+            throw new common_1.ForbiddenException('User not found');
+        await this.prisma.resetPasswordToken.create({
+            data: {
+                token: token,
+                userId: user.id,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 1)
+            }
+        });
+        await this.mailService.sendPasswordResetEmail(user.email, token);
+    }
+    async resetPassword(dto) {
+        if (dto.newPassword !== dto.confirmPassword)
+            throw new common_1.ForbiddenException('Password not match');
+        const getUserData = await this.prisma.resetPasswordToken.findUnique({
+            where: { token: dto.token }
+        });
+        const newPassword = await argon2.hash(dto.newPassword);
+        if (getUserData?.expiresAt < new Date() || !getUserData)
+            throw new common_1.ForbiddenException('Token is exipre or invalid');
+        const user = await this.prisma.user.update({
+            where: { id: getUserData.userId },
+            data: { password: newPassword }
+        });
+        await this.prisma.resetPasswordToken.update({
+            where: { token: dto.token },
+            data: { isValid: false }
+        });
+        await this.prisma.resetPasswordToken.delete({
+            where: { token: dto.token }
+        });
+        delete user.password;
+        return user;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        send_reset_password_1.MailService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

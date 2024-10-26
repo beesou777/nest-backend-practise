@@ -1,12 +1,14 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { ChangePasswordDto, CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, ForgotPasswordDto, ResetPassword, SigninUserDto, UpdateUserDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { MailService } from './services/send-reset-password';
 export declare class UsersService {
     private readonly prisma;
     private jwt;
     private config;
-    constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService);
+    private readonly mailService;
+    constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService, mailService: MailService);
     createUser(data: CreateUserDto): Promise<{
         id: number;
         email: string;
@@ -51,6 +53,19 @@ export declare class UsersService {
         updatedAt: Date;
     }>;
     changePassword(userId: number, dto: ChangePasswordDto): Promise<{
+        id: number;
+        email: string;
+        password: string;
+        name: string;
+        phone: string | null;
+        isVerified: boolean;
+        role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    forgotPassword(dto: ForgotPasswordDto): Promise<void>;
+    resetPassword(dto: ResetPassword): Promise<{
         id: number;
         email: string;
         password: string;

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Put, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ChangePasswordDto, CreateUserDto,SigninUserDto, UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto,ForgotPasswordDto,ResetPassword,SigninUserDto, UpdateUserDto } from './dto';
 import { AuthGuard } from './guards/auth.guard';
 
 @Controller('users')
@@ -46,4 +46,19 @@ export class UsersController {
     if (!userId) throw new UnauthorizedException("User ID not found");
     return this.usersService.changePassword(+userId, data);
   }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('forgot-password')
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    if (!dto.email) throw new UnauthorizedException("User does not exist");
+    return this.usersService.forgotPassword(dto);
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPassword) {
+    return this.usersService.resetPassword(dto);
+  }
+
+
 }

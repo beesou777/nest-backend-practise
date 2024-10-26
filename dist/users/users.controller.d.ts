@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import { ChangePasswordDto, CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, ForgotPasswordDto, ResetPassword, SigninUserDto, UpdateUserDto } from './dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -32,6 +32,19 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     changePassword(req: Record<string, any>, data: ChangePasswordDto): Promise<{
+        id: number;
+        email: string;
+        password: string;
+        name: string;
+        phone: string | null;
+        isVerified: boolean;
+        role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    forgotPassword(dto: ForgotPasswordDto): Promise<void>;
+    resetPassword(dto: ResetPassword): Promise<{
         id: number;
         email: string;
         password: string;

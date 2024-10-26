@@ -1,18 +1,21 @@
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ChangePasswordDto, CreateUserDto, SigninUserDto,UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, ForgotPasswordDto, ResetPassword, SigninUserDto, UpdateUserDto } from './dto';
 import * as argon2 from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
+import { MailService } from './services/send-reset-password';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private jwt: JwtService,
-    private config: ConfigService
-  ) {}
+    private config: ConfigService,
+    private readonly mailService: MailService
+  ) { }
 
   async createUser(data: CreateUserDto) {
     try {
@@ -83,11 +86,11 @@ export class UsersService {
   }
 
   async updateUser(id: number, data: Partial<UpdateUserDto>) {
-    if(!id && data) throw new ForbiddenException('User ID not found')
-      const updateData = {
-        ...(data.name && { name: data.name }),
-        ...(data.companyName && { companyName: data.companyName }),
-      };
+    if (!id && data) throw new ForbiddenException('User ID not found')
+    const updateData = {
+      ...(data.name && { name: data.name }),
+      ...(data.companyName && { companyName: data.companyName }),
+    };
     return this.prisma.user.update({
       where: { id },
       data: updateData,
@@ -99,24 +102,24 @@ export class UsersService {
       where: { id: userId },
     });
 
-    if(!profile) throw new ForbiddenException('User not found')
+    if (!profile) throw new ForbiddenException('User not found')
     delete profile.password
 
     return profile
   }
 
-  async changePassword(userId:number,dto:ChangePasswordDto) {
-    if(!userId && dto) throw new ForbiddenException('User ID not found')
-    
+  async changePassword(userId: number, dto: ChangePasswordDto) {
+    if (!userId && dto) throw new ForbiddenException('User ID not found')
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     })
 
-    if(!user) throw new ForbiddenException('User not found')
+    if (!user) throw new ForbiddenException('User not found')
 
     const pwMtches = await argon2.verify(user.password, dto.currentPassword)
-    if(!pwMtches) throw new ForbiddenException('Current Password not correct')
-    if(dto.newPassword !== dto.confirmPassword) throw new ForbiddenException('Password not match')
+    if (!pwMtches) throw new ForbiddenException('Current Password not correct')
+    if (dto.newPassword !== dto.confirmPassword) throw new ForbiddenException('Password not match')
     const hash = await argon2.hash(dto.newPassword)
     const updateUser = this.prisma.user.update({
       where: { id: userId },
@@ -125,5 +128,46 @@ export class UsersService {
     delete (await updateUser).password
     return updateUser
   }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    if (!dto.email) throw new ForbiddenException('Email not found')
+    const token = uuidv4()
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } })
+    if (!user) throw new ForbiddenException('User not found')
+
+    await this.prisma.resetPasswordToken.create({
+      data: {
+        token: token,
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 1)
+      }
+    })
+
+    await this.mailService.sendPasswordResetEmail(user.email, token)
+  }
+
+  async resetPassword(dto: ResetPassword) {
+    if (dto.newPassword !== dto.confirmPassword) throw new ForbiddenException('Password not match')
+    const getUserData = await this.prisma.resetPasswordToken.findUnique({
+      where: { token: dto.token }
+    })
+    const newPassword = await argon2.hash(dto.newPassword)
+    if (getUserData?.expiresAt < new Date() || !getUserData) throw new ForbiddenException('Token is exipre or invalid')
+
+    const user = await this.prisma.user.update({
+      where: { id: getUserData.userId },
+      data: { password: newPassword }
+    })
+
+    await this.prisma.resetPasswordToken.update({
+      where: { token: dto.token },
+      data: { isValid: false }
+    })
+
+    await this.prisma.resetPasswordToken.delete({
+      where: { token: dto.token }
+    })
+    delete user.password
+    return user
+  }
 }
- 
