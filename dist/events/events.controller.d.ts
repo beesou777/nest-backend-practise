@@ -4,8 +4,8 @@ export declare class EventsController {
     private readonly eventsService;
     constructor(eventsService: EventsService);
     create(data: CreateEventDto): Promise<{
-        id: number;
         name: string;
+        id: number;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -17,8 +17,8 @@ export declare class EventsController {
         locationId: number;
     }>;
     findAll(): Promise<{
-        id: number;
         name: string;
+        id: number;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -30,8 +30,8 @@ export declare class EventsController {
         locationId: number;
     }[]>;
     findOne(id: number): Promise<{
-        id: number;
         name: string;
+        id: number;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -43,8 +43,8 @@ export declare class EventsController {
         locationId: number;
     }>;
     update(id: number, data: Partial<CreateEventDto>): Promise<{
-        id: number;
         name: string;
+        id: number;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -56,8 +56,8 @@ export declare class EventsController {
         locationId: number;
     }>;
     delete(id: number): Promise<{
-        id: number;
         name: string;
+        id: number;
         createdAt: Date;
         updatedAt: Date;
         description: string;

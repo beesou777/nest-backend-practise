@@ -8,6 +8,7 @@ import { LocationsModule } from './locations/locations.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from './guards/throttle.guards';
 
 @Module({
   imports: [
@@ -24,6 +25,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
     CategoriesModule,
     LocationsModule,
     FeedbacksModule,
+  ],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: CustomThrottlerGuard,
+    }
   ],
 })
 export class AppModule {}

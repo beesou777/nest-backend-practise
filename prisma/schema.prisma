@@ -22,6 +22,9 @@ model User {
   updatedAt   DateTime  @updatedAt
   feedback    Feedback[]
   resetPasswordToken ResetPasswordToken?
+  isUserBlocked Boolean @default(false)
+  blockedAt    DateTime?
+  failedAttempts Int @default(0)
 }
 
 enum UserRole {

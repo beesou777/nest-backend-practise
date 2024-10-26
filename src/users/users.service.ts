@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from './services/send-reset-password';
+import * as moment from "moment"
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     private jwt: JwtService,
     private config: ConfigService,
     private readonly mailService: MailService
-  ) { }
+  ) {}
 
   async createUser(data: CreateUserDto) {
     try {
@@ -47,12 +48,57 @@ export class UsersService {
       where: {
         email: dto.email
       }
-    })
-    if (!user) throw new ForbiddenException('Credentials incorrect')
-    const pwMtches = await argon2.verify(user.password, dto.password)
-    if (!pwMtches) throw new UnauthorizedException()
+    });
 
-    return this.signToken(user.id, user.email, user.role)
+    if (!user) throw new ForbiddenException('Credentials incorrect');
+
+    if (user.isUserBlocked && user.blockedAt) {
+      const unblockTime = moment(user.blockedAt).add(8, 'hours');
+      if (moment().isAfter(unblockTime)) {
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            isUserBlocked: false,
+            blockedAt: null,
+          }
+        });
+      } else {
+        throw new ForbiddenException('User is temporarily blocked. Try again later.');
+      }
+    }
+
+    // Verify password
+    const pwMatches = await argon2.verify(user.password, dto.password);
+    if (!pwMatches) {
+      const updatedAttempts = (user.failedAttempts || 0) + 1;
+      const isUserBlocked = updatedAttempts >= 10;
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          failedAttempts: updatedAttempts,
+          isUserBlocked,
+          blockedAt: isUserBlocked ? new Date() : null
+        }
+      });
+
+      if (isUserBlocked) {
+        throw new ForbiddenException('User account blocked due to multiple failed login attempts');
+      }
+
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        failedAttempts: 0,
+        isUserBlocked: false,
+        blockedAt: null
+      }
+    });
+
+    return this.signToken(user.id, user.email, user.role);
   }
 
   async signToken(userId: number, email: string, role: string): Promise<{ access_token: string }> {

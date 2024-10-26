@@ -20,6 +20,9 @@ export declare class UsersService {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     signIn(dto: SigninUserDto): Promise<{
         access_token: string;
@@ -39,6 +42,9 @@ export declare class UsersService {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     getUserProfile(userId: number): Promise<{
         id: number;
@@ -51,6 +57,9 @@ export declare class UsersService {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     changePassword(userId: number, dto: ChangePasswordDto): Promise<{
         id: number;
@@ -63,6 +72,9 @@ export declare class UsersService {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resetPassword(dto: ResetPassword): Promise<{
@@ -76,5 +88,8 @@ export declare class UsersService {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
 }

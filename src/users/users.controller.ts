@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, HttpCode, HttpStatus, UseGuards, Req,
 import { UsersService } from './users.service';
 import { ChangePasswordDto, CreateUserDto,ForgotPasswordDto,ResetPassword,SigninUserDto, UpdateUserDto } from './dto';
 import { AuthGuard } from './guards/auth.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('users')
 export class UsersController {
@@ -13,6 +14,7 @@ export class UsersController {
     return this.usersService.createUser(data);
   }
 
+  @Throttle({default:{limit:5,ttl:60000}})
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   signIn(@Body() dto: SigninUserDto) {
@@ -38,6 +40,7 @@ export class UsersController {
     return this.usersService.updateUser(+userId, data);
   }
 
+  @Throttle({default:{limit:30,ttl:60000}})
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Put('change-password')
@@ -47,6 +50,7 @@ export class UsersController {
     return this.usersService.changePassword(+userId, data);
   }
 
+  @Throttle({default:{limit:30,ttl:60000}})
   @HttpCode(HttpStatus.CREATED)
   @Post('forgot-password')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -54,11 +58,10 @@ export class UsersController {
     return this.usersService.forgotPassword(dto);
   }
 
+  @Throttle({default:{limit:30,ttl:60000}})
   @HttpCode(HttpStatus.CREATED)
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPassword) {
     return this.usersService.resetPassword(dto);
   }
-
-
 }

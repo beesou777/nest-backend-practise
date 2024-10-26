@@ -14,6 +14,9 @@ export declare class UsersController {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     signIn(dto: SigninUserDto): Promise<{
         access_token: string;
@@ -30,6 +33,9 @@ export declare class UsersController {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     changePassword(req: Record<string, any>, data: ChangePasswordDto): Promise<{
         id: number;
@@ -42,6 +48,9 @@ export declare class UsersController {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resetPassword(dto: ResetPassword): Promise<{
@@ -55,5 +64,8 @@ export declare class UsersController {
         companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isUserBlocked: boolean;
+        blockedAt: Date | null;
+        failedAttempts: number;
     }>;
 }

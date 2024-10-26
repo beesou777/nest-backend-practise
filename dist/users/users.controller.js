@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const dto_1 = require("./dto");
 const auth_guard_1 = require("./guards/auth.guard");
+const throttler_1 = require("@nestjs/throttler");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -64,6 +65,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "createUser", null);
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 5, ttl: 60000 } }),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('signin'),
     __param(0, (0, common_1.Body)()),
@@ -91,6 +93,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUser", null);
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 30, ttl: 60000 } }),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     (0, common_1.Put)('change-password'),
@@ -101,6 +104,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "changePassword", null);
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 30, ttl: 60000 } }),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     (0, common_1.Post)('forgot-password'),
     __param(0, (0, common_1.Body)()),
@@ -109,6 +113,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "forgotPassword", null);
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 30, ttl: 60000 } }),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     (0, common_1.Post)('reset-password'),
     __param(0, (0, common_1.Body)()),

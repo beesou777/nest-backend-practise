@@ -18,6 +18,7 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const uuid_1 = require("uuid");
 const send_reset_password_1 = require("./services/send-reset-password");
+const moment = require("moment");
 let UsersService = class UsersService {
     constructor(prisma, jwt, config, mailService) {
         this.prisma = prisma;
@@ -57,9 +58,46 @@ let UsersService = class UsersService {
         });
         if (!user)
             throw new common_1.ForbiddenException('Credentials incorrect');
-        const pwMtches = await argon2.verify(user.password, dto.password);
-        if (!pwMtches)
-            throw new common_1.UnauthorizedException();
+        if (user.isUserBlocked && user.blockedAt) {
+            const unblockTime = moment(user.blockedAt).add(8, 'hours');
+            if (moment().isAfter(unblockTime)) {
+                await this.prisma.user.update({
+                    where: { id: user.id },
+                    data: {
+                        isUserBlocked: false,
+                        blockedAt: null,
+                    }
+                });
+            }
+            else {
+                throw new common_1.ForbiddenException('User is temporarily blocked. Try again later.');
+            }
+        }
+        const pwMatches = await argon2.verify(user.password, dto.password);
+        if (!pwMatches) {
+            const updatedAttempts = (user.failedAttempts || 0) + 1;
+            const isUserBlocked = updatedAttempts >= 10;
+            await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    failedAttempts: updatedAttempts,
+                    isUserBlocked,
+                    blockedAt: isUserBlocked ? new Date() : null
+                }
+            });
+            if (isUserBlocked) {
+                throw new common_1.ForbiddenException('User account blocked due to multiple failed login attempts');
+            }
+            throw new common_1.UnauthorizedException('Invalid credentials');
+        }
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                failedAttempts: 0,
+                isUserBlocked: false,
+                blockedAt: null
+            }
+        });
         return this.signToken(user.id, user.email, user.role);
     }
     async signToken(userId, email, role) {
