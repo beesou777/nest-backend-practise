@@ -27,6 +27,7 @@ let EventsController = class EventsController {
         return this.eventsService.findAll();
     }
     findOne(id) {
+        console.log(id);
         return this.eventsService.findOne(+id);
     }
     update(id, data) {

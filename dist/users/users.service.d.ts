@@ -1,5 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 export declare class UsersService {
@@ -8,12 +8,14 @@ export declare class UsersService {
     private config;
     constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService);
     createUser(data: CreateUserDto): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
+        phone: string | null;
+        isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -25,22 +27,38 @@ export declare class UsersService {
     }>;
     verifyToken(token: string): Promise<any>;
     updateUser(id: number, data: Partial<UpdateUserDto>): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
+        phone: string | null;
+        isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     getUserProfile(userId: number): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
+        phone: string | null;
+        isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    changePassword(userId: number, dto: ChangePasswordDto): Promise<{
         id: number;
+        email: string;
+        password: string;
+        name: string;
+        phone: string | null;
+        isVerified: boolean;
+        role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

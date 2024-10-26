@@ -12,6 +12,8 @@ model User {
   email       String    @unique
   password    String
   name        String
+  phone       String?
+  isVerified  Boolean   @default(false)
   role        UserRole  // Organizer or Attendee
   companyName String?   // Nullable for attendees
   events      Event[]   @relation("EventOrganizer")

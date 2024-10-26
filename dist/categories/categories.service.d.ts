@@ -4,32 +4,32 @@ export declare class CategoriesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(data: CreateCategoryDto): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
     }>;
     findAll(): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
     findOne(id: number): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
     }>;
     update(id: number, data: Partial<CreateCategoryDto>): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
     }>;
     delete(id: number): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
     }>;

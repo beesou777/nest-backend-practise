@@ -1,15 +1,17 @@
 import { UsersService } from './users.service';
-import { CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, SigninUserDto, UpdateUserDto } from './dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     createUser(data: CreateUserDto): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
+        phone: string | null;
+        isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
-        id: number;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -18,12 +20,26 @@ export declare class UsersController {
     }>;
     getProfile(req: Record<string, any>): Promise<any>;
     updateUser(req: Record<string, any>, data: Partial<UpdateUserDto>): Promise<{
+        id: number;
         email: string;
         password: string;
         name: string;
-        companyName: string | null;
+        phone: string | null;
+        isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    changePassword(req: Record<string, any>, data: ChangePasswordDto): Promise<{
         id: number;
+        email: string;
+        password: string;
+        name: string;
+        phone: string | null;
+        isVerified: boolean;
+        role: import(".prisma/client").$Enums.UserRole;
+        companyName: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

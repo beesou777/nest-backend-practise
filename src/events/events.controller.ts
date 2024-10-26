@@ -18,6 +18,7 @@ export class EventsController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
+    console.log(id);
     return this.eventsService.findOne(+id);
   }
 

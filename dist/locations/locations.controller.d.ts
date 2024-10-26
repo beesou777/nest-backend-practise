@@ -8,39 +8,39 @@ export declare class LocationsController {
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
     }>;
     findAll(): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
     }[]>;
     findOne(id: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
     }>;
     update(id: number, data: Partial<CreateLocationDto>): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
     }>;
     delete(id: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
     }>;
 }

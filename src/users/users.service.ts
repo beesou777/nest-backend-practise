@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto, SigninUserDto,UpdateUserDto } from './dto';
+import { ChangePasswordDto, CreateUserDto, SigninUserDto,UpdateUserDto } from './dto';
 import * as argon2 from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -12,7 +12,7 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService
-  ) { }
+  ) {}
 
   async createUser(data: CreateUserDto) {
     try {
@@ -103,6 +103,27 @@ export class UsersService {
     delete profile.password
 
     return profile
+  }
+
+  async changePassword(userId:number,dto:ChangePasswordDto) {
+    if(!userId && dto) throw new ForbiddenException('User ID not found')
+    
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    })
+
+    if(!user) throw new ForbiddenException('User not found')
+
+    const pwMtches = await argon2.verify(user.password, dto.currentPassword)
+    if(!pwMtches) throw new ForbiddenException('Current Password not correct')
+    if(dto.newPassword !== dto.confirmPassword) throw new ForbiddenException('Password not match')
+    const hash = await argon2.hash(dto.newPassword)
+    const updateUser = this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hash }
+    })
+    delete (await updateUser).password
+    return updateUser
   }
 }
  

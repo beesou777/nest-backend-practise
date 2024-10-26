@@ -39,6 +39,12 @@ let UsersController = class UsersController {
             throw new common_1.UnauthorizedException("User ID not found");
         return this.usersService.updateUser(+userId, data);
     }
+    changePassword(req, data) {
+        const userId = req?.user.sub;
+        if (!userId)
+            throw new common_1.UnauthorizedException("User ID not found");
+        return this.usersService.changePassword(+userId, data);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -76,6 +82,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.Put)('change-password'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, dto_1.ChangePasswordDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "changePassword", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

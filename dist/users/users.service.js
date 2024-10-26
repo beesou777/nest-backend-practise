@@ -107,6 +107,27 @@ let UsersService = class UsersService {
         delete profile.password;
         return profile;
     }
+    async changePassword(userId, dto) {
+        if (!userId && dto)
+            throw new common_1.ForbiddenException('User ID not found');
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+        if (!user)
+            throw new common_1.ForbiddenException('User not found');
+        const pwMtches = await argon2.verify(user.password, dto.currentPassword);
+        if (!pwMtches)
+            throw new common_1.ForbiddenException('Current Password not correct');
+        if (dto.newPassword !== dto.confirmPassword)
+            throw new common_1.ForbiddenException('Password not match');
+        const hash = await argon2.hash(dto.newPassword);
+        const updateUser = this.prisma.user.update({
+            where: { id: userId },
+            data: { password: hash }
+        });
+        delete (await updateUser).password;
+        return updateUser;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
