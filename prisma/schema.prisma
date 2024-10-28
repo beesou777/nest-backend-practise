@@ -74,6 +74,9 @@ model Location {
   city      String
   state     String
   country   String
+  postalCode String
+  lat       Decimal
+  lng       Decimal
   events    Event[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
