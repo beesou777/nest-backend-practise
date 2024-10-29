@@ -215,5 +215,6 @@ export class UsersService {
     })
     delete user.password
     return user
-  }
+  } 
 }
+ 

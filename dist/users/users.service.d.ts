@@ -10,10 +10,10 @@ export declare class UsersService {
     private readonly mailService;
     constructor(prisma: PrismaService, jwt: JwtService, config: ConfigService, mailService: MailService);
     createUser(data: CreateUserDto): Promise<{
+        name: string;
         id: number;
         email: string;
         password: string;
-        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -32,10 +32,10 @@ export declare class UsersService {
     }>;
     verifyToken(token: string): Promise<any>;
     updateUser(id: number, data: Partial<UpdateUserDto>): Promise<{
+        name: string;
         id: number;
         email: string;
         password: string;
-        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -47,10 +47,10 @@ export declare class UsersService {
         failedAttempts: number;
     }>;
     getUserProfile(userId: number): Promise<{
+        name: string;
         id: number;
         email: string;
         password: string;
-        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -62,10 +62,10 @@ export declare class UsersService {
         failedAttempts: number;
     }>;
     changePassword(userId: number, dto: ChangePasswordDto): Promise<{
+        name: string;
         id: number;
         email: string;
         password: string;
-        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -78,10 +78,10 @@ export declare class UsersService {
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resetPassword(dto: ResetPassword): Promise<{
+        name: string;
         id: number;
         email: string;
         password: string;
-        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;

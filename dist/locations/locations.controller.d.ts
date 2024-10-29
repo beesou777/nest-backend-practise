@@ -8,39 +8,54 @@ export declare class LocationsController {
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
+        postalCode: string;
+        lat: import("@prisma/client/runtime/library").Decimal;
+        lng: import("@prisma/client/runtime/library").Decimal;
     }>;
     findAll(): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
+        postalCode: string;
+        lat: import("@prisma/client/runtime/library").Decimal;
+        lng: import("@prisma/client/runtime/library").Decimal;
     }[]>;
     findOne(id: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
+        postalCode: string;
+        lat: import("@prisma/client/runtime/library").Decimal;
+        lng: import("@prisma/client/runtime/library").Decimal;
     }>;
     update(id: number, data: Partial<CreateLocationDto>): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
+        postalCode: string;
+        lat: import("@prisma/client/runtime/library").Decimal;
+        lng: import("@prisma/client/runtime/library").Decimal;
     }>;
     delete(id: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         city: string;
-        country: string;
         state: string;
+        country: string;
+        postalCode: string;
+        lat: import("@prisma/client/runtime/library").Decimal;
+        lng: import("@prisma/client/runtime/library").Decimal;
     }>;
 }

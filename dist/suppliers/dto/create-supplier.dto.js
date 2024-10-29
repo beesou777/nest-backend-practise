@@ -9,43 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateLocationDto = void 0;
+exports.CreateSupplierDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateLocationDto {
+class CreateSupplierDto {
 }
-exports.CreateLocationDto = CreateLocationDto;
+exports.CreateSupplierDto = CreateSupplierDto;
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.Length)(2, 50),
     __metadata("design:type", String)
-], CreateLocationDto.prototype, "city", void 0);
+], CreateSupplierDto.prototype, "name", void 0);
 __decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateSupplierDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.Length)(10, 15),
     __metadata("design:type", String)
-], CreateLocationDto.prototype, "country", void 0);
+], CreateSupplierDto.prototype, "phone", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateLocationDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateLocationDto.prototype, "state", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], CreateLocationDto.prototype, "lat", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], CreateLocationDto.prototype, "long", void 0);
-__decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateLocationDto.prototype, "postalCode", void 0);
-//# sourceMappingURL=create-location.dto.js.map
+], CreateSupplierDto.prototype, "address", void 0);
+//# sourceMappingURL=create-supplier.dto.js.map

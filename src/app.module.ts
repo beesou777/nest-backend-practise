@@ -9,6 +9,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './guards/throttle.guards';
+import { SuppliersModule } from './suppliers/suppliers.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CustomThrottlerGuard } from './guards/throttle.guards';
     CategoriesModule,
     LocationsModule,
     FeedbacksModule,
+    SuppliersModule,
   ],
   providers: [
     {

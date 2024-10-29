@@ -4,10 +4,8 @@ export declare class EventsController {
     private readonly eventsService;
     constructor(eventsService: EventsService);
     create(data: CreateEventDto): Promise<{
-        name: string;
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         description: string;
         date: Date;
         time: string;
@@ -15,12 +13,12 @@ export declare class EventsController {
         organizerId: number;
         categoryId: number;
         locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     findAll(): Promise<{
-        name: string;
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         description: string;
         date: Date;
         time: string;
@@ -28,12 +26,12 @@ export declare class EventsController {
         organizerId: number;
         categoryId: number;
         locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     findOne(id: number): Promise<{
-        name: string;
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         description: string;
         date: Date;
         time: string;
@@ -41,12 +39,12 @@ export declare class EventsController {
         organizerId: number;
         categoryId: number;
         locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(id: number, data: Partial<CreateEventDto>): Promise<{
-        name: string;
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         description: string;
         date: Date;
         time: string;
@@ -54,12 +52,12 @@ export declare class EventsController {
         organizerId: number;
         categoryId: number;
         locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     delete(id: number): Promise<{
-        name: string;
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
+        name: string;
         description: string;
         date: Date;
         time: string;
@@ -67,5 +65,7 @@ export declare class EventsController {
         organizerId: number;
         categoryId: number;
         locationId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

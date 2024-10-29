@@ -17,6 +17,7 @@ const feedbacks_module_1 = require("./feedbacks/feedbacks.module");
 const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const throttle_guards_1 = require("./guards/throttle.guards");
+const suppliers_module_1 = require("./suppliers/suppliers.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             categories_module_1.CategoriesModule,
             locations_module_1.LocationsModule,
             feedbacks_module_1.FeedbacksModule,
+            suppliers_module_1.SuppliersModule,
         ],
         providers: [
             {

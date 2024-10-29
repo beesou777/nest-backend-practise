@@ -59,7 +59,7 @@ export class UsersController {
   }
 
   @Throttle({default:{limit:30,ttl:60000}})
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.CREATED) 
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPassword) {
     return this.usersService.resetPassword(dto);

@@ -3,4 +3,7 @@ export declare class CreateLocationDto {
     country: string;
     address: string;
     state: string;
+    lat: number;
+    long: number;
+    postalCode?: string;
 }

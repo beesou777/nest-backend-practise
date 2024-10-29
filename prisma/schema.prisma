@@ -8,23 +8,26 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  password    String
-  name        String
-  phone       String?
-  isVerified  Boolean   @default(false)
-  role        UserRole  // Organizer or Attendee
-  companyName String?   // Nullable for attendees
-  events      Event[]   @relation("EventOrganizer")
-  savedEvents SavedEvent[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  feedback    Feedback[]
+  id               Int           @id @default(autoincrement())
+  email            String        @unique
+  password         String
+  name             String
+  phone            String?
+  isVerified       Boolean       @default(false)
+  role             UserRole
+  companyName      String?
+  events           Event[]       @relation("EventOrganizer")
+  savedEvents      SavedEvent[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  feedback         Feedback[]
+  suppliers        Supplier[]
+  supplierReviews  SupplierReview[]
   resetPasswordToken ResetPasswordToken?
-  isUserBlocked Boolean @default(false)
-  blockedAt    DateTime?
-  failedAttempts Int @default(0)
+  isUserBlocked    Boolean       @default(false)
+  blockedAt        DateTime?
+  failedAttempts   Int           @default(0)
+  bookings         Booking[]     @relation("OrganizerBookings")
 }
 
 enum UserRole {
@@ -41,24 +44,24 @@ model ResetPasswordToken {
   isValid   Boolean @default(true)
 }
 
-
 model Event {
-  id          Int        @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String
   date        DateTime
   time        String
   venue       String
-  organizer   User       @relation("EventOrganizer", fields: [organizerId], references: [id])
+  organizer   User           @relation("EventOrganizer", fields: [organizerId], references: [id])
   organizerId Int
-  category    Category   @relation(fields: [categoryId], references: [id])
+  category    Category       @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  location    Location   @relation(fields: [locationId], references: [id])
+  location    Location       @relation(fields: [locationId], references: [id])
   locationId  Int
   attendees   SavedEvent[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  bookings    Booking[]      @relation("EventBookings")
   feedback    Feedback[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model Category {
@@ -78,6 +81,7 @@ model Location {
   lat       Decimal
   lng       Decimal
   events    Event[]
+  suppliers Supplier[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -100,5 +104,100 @@ model Feedback {
   rating    Int      // Rating scale (1-5)
   comment   String?
   createdAt DateTime @default(now())
+}
 
+model Supplier {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  email       String        @unique
+  phone       String?
+  location    Location      @relation(fields: [locationId], references: [id])
+  locationId  Int
+  user        User?         @relation(fields: [userId], references: [id]) // Connects a supplier to a user profile if desired
+  userId      Int?
+  services    Service[] 
+  reviews     SupplierReview[]
+  bookings    Booking[]
+  availability Calendar[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Service {
+  id              Int             @id @default(autoincrement())
+  name            String
+  description     String
+  pricing         Float
+  supplier        Supplier        @relation(fields: [supplierId], references: [id])
+  supplierId      Int
+  supplierCategory SupplierCategory @relation(fields: [categoryId], references: [id])
+  categoryId      Int
+  images          ImageGallery[] 
+  availableDates  Calendar[]      @relation("ServiceCalendar")
+  bookings        Booking[]       @relation("ServiceBookings")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model SupplierCategory {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique // e.g., Venue, Catering, Photography
+  description String?
+  services    Service[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Booking {
+  id          Int             @id @default(autoincrement())
+  organizer   User            @relation("OrganizerBookings", fields: [organizerId], references: [id])
+  organizerId Int
+  supplier    Supplier        @relation(fields: [supplierId], references: [id])
+  supplierId  Int
+  service     Service         @relation("ServiceBookings", fields: [serviceId], references: [id])
+  serviceId   Int
+  event       Event           @relation("EventBookings", fields: [eventId], references: [id])
+  eventId     Int
+  status      BookingStatus   @default(PENDING)
+  bookingDate DateTime
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  COMPLETED
+  CANCELED
+}
+
+model SupplierReview {
+  id          Int        @id @default(autoincrement())
+  supplier    Supplier   @relation(fields: [supplierId], references: [id])
+  supplierId  Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  rating      Int        // Rating out of 5
+  comment     String?
+  createdAt   DateTime   @default(now())
+}
+
+model Calendar {
+  id          Int       @id @default(autoincrement())
+  supplier    Supplier? @relation(fields: [supplierId], references: [id])
+  supplierId  Int?
+  service     Service?  @relation("ServiceCalendar", fields: [serviceId], references: [id])
+  serviceId   Int?
+  date        DateTime
+  isAvailable Boolean   @default(true)
+}
+
+model ImageGallery {
+  id          Int       @id @default(autoincrement())
+  imageUrl    String
+  description String?
+  service     Service   @relation(fields: [serviceId], references: [id])
+  serviceId   Int
 }
