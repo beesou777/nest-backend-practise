@@ -33,6 +33,7 @@ model User {
 enum UserRole {
   ORGANIZER
   ATTENDEE
+  ADMIN
 }
 
 model ResetPasswordToken {
@@ -66,10 +67,17 @@ model Event {
 
 model Category {
   id        Int     @id @default(autoincrement())
-  name      String  @unique
+  name      String
+  type      CategoryType
+  suppliers Supplier[]
   events    Event[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum CategoryType {
+  SUPPLIER
+  EVENT
 }
 
 model Location {
@@ -114,14 +122,16 @@ model Supplier {
   phone       String?
   location    Location      @relation(fields: [locationId], references: [id])
   locationId  Int
-  user        User?         @relation(fields: [userId], references: [id]) // Connects a supplier to a user profile if desired
+  user        User?         @relation(fields: [userId], references: [id])
   userId      Int?
+  category    Category      @relation(fields: [categoryId], references: [id])
+  categoryId  Int
   services    Service[] 
   reviews     SupplierReview[]
   bookings    Booking[]
   availability Calendar[]
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  updatedAt   DateTime      @default(now())
 }
 
 model Service {

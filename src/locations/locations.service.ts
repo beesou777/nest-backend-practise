@@ -6,9 +6,9 @@ import { CreateLocationDto } from './dto/create-location.dto';
 export class LocationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateLocationDto) {
-    return this.prisma.location.create({ data });
-  }
+  // async create(data: CreateLocationDto) {
+  //   return this.prisma.location.create({ data });
+  // }
  
   async findAll() {
     return this.prisma.location.findMany();

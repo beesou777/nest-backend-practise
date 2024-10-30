@@ -7,18 +7,18 @@ import { CreateSupplierDto,UpdateSupplierDto } from './dto';
 export class SuppliersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createSupplierDto: CreateSupplierDto) {
-    try {
-      return await this.prisma.supplier.create({
-        data: createSupplierDto,
-      });
-    } catch (error) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('Supplier with this email already exists.');
-      }
-      throw error;
-    }
-  }
+  // async create(createSupplierDto: CreateSupplierDto) {
+  //   try {
+  //     return await this.prisma.supplier.create({
+  //       data: createSupplierDto,
+  //     });
+  //   } catch (error) {
+  //     if (error.code === 'P2002') {
+  //       throw new ConflictException('Supplier with this email already exists.');
+  //     }
+  //     throw error;
+  //   }
+  // }
 
   async findAll() {
     return await this.prisma.supplier.findMany();

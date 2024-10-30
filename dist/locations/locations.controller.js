@@ -15,13 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationsController = void 0;
 const common_1 = require("@nestjs/common");
 const locations_service_1 = require("./locations.service");
-const create_location_dto_1 = require("./dto/create-location.dto");
 let LocationsController = class LocationsController {
     constructor(locationsService) {
         this.locationsService = locationsService;
-    }
-    create(data) {
-        return this.locationsService.create(data);
     }
     findAll() {
         return this.locationsService.findAll();
@@ -39,12 +35,6 @@ let LocationsController = class LocationsController {
 exports.LocationsController = LocationsController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_location_dto_1.CreateLocationDto]),
-    __metadata("design:returntype", void 0)
-], LocationsController.prototype, "create", null);
-__decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

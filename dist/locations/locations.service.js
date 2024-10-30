@@ -16,9 +16,6 @@ let LocationsService = class LocationsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(data) {
-        return this.prisma.location.create({ data });
-    }
     async findAll() {
         return this.prisma.location.findMany();
     }

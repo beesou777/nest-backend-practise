@@ -16,19 +16,6 @@ let SuppliersService = class SuppliersService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(createSupplierDto) {
-        try {
-            return await this.prisma.supplier.create({
-                data: createSupplierDto,
-            });
-        }
-        catch (error) {
-            if (error.code === 'P2002') {
-                throw new common_1.ConflictException('Supplier with this email already exists.');
-            }
-            throw error;
-        }
-    }
     async findAll() {
         return await this.prisma.supplier.findMany();
     }

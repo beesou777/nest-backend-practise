@@ -39,7 +39,7 @@ let EventsController = class EventsController {
 };
 exports.EventsController = EventsController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_evnet_dto_1.CreateEventDto]),

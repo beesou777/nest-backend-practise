@@ -6,7 +6,7 @@ import { CreateEventDto } from './dto/create-evnet.dto';
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() data: CreateEventDto) {
     return this.eventsService.create(data);
   }

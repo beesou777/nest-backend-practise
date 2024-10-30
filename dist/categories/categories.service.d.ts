@@ -1,35 +1,40 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 export declare class CategoriesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(data: CreateCategoryDto): Promise<{
-        name: string;
+    create(createCategoryDto: CreateCategoryDto): Promise<{
         id: number;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         createdAt: Date;
         updatedAt: Date;
     }>;
     findAll(): Promise<{
-        name: string;
         id: number;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
     findOne(id: number): Promise<{
-        name: string;
         id: number;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         createdAt: Date;
         updatedAt: Date;
     }>;
-    update(id: number, data: Partial<CreateCategoryDto>): Promise<{
-        name: string;
+    update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<{
         id: number;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         createdAt: Date;
         updatedAt: Date;
     }>;
-    delete(id: number): Promise<{
-        name: string;
+    remove(id: number): Promise<{
         id: number;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         createdAt: Date;
         updatedAt: Date;
     }>;

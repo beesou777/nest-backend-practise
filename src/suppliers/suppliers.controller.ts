@@ -6,10 +6,10 @@ import { CreateSupplierDto,UpdateSupplierDto } from './dto';
 export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
-  @Post()
-  async create(@Body() createSupplierDto: CreateSupplierDto) {
-    return await this.suppliersService.create(createSupplierDto);
-  }
+  // @Post()
+  // async create(@Body() createSupplierDto: CreateSupplierDto) {
+  //   return await this.suppliersService.create(createSupplierDto);
+  // }
 
   @Get()
   async findAll() {

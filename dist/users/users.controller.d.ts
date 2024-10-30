@@ -4,10 +4,10 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     createUser(data: CreateUserDto): Promise<{
-        name: string;
         id: number;
         email: string;
         password: string;
+        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -23,10 +23,10 @@ export declare class UsersController {
     }>;
     getProfile(req: Record<string, any>): Promise<any>;
     updateUser(req: Record<string, any>, data: Partial<UpdateUserDto>): Promise<{
-        name: string;
         id: number;
         email: string;
         password: string;
+        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -38,10 +38,10 @@ export declare class UsersController {
         failedAttempts: number;
     }>;
     changePassword(req: Record<string, any>, data: ChangePasswordDto): Promise<{
-        name: string;
         id: number;
         email: string;
         password: string;
+        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;
@@ -54,10 +54,10 @@ export declare class UsersController {
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resetPassword(dto: ResetPassword): Promise<{
-        name: string;
         id: number;
         email: string;
         password: string;
+        name: string;
         phone: string | null;
         isVerified: boolean;
         role: import(".prisma/client").$Enums.UserRole;

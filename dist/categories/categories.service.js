@@ -16,20 +16,58 @@ let CategoriesService = class CategoriesService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(data) {
-        return this.prisma.category.create({ data });
+    async create(createCategoryDto) {
+        const checkExist = await this.prisma.category.findFirst({
+            where: {
+                name: createCategoryDto.name,
+                type: createCategoryDto.type
+            }
+        });
+        if (checkExist && checkExist.name === createCategoryDto.name && checkExist.type === createCategoryDto.type)
+            throw new common_1.BadRequestException(`Category with name ${createCategoryDto.name} already exists`);
+        if (checkExist && checkExist.type === createCategoryDto.type)
+            throw new common_1.BadRequestException(`Category with type ${createCategoryDto.type} already exists`);
+        return this.prisma.category.create({
+            data: createCategoryDto,
+        });
     }
     async findAll() {
         return this.prisma.category.findMany();
     }
     async findOne(id) {
-        return this.prisma.category.findUnique({ where: { id } });
+        const category = await this.prisma.category.findUnique({
+            where: { id },
+        });
+        if (!category) {
+            throw new common_1.NotFoundException(`Category with ID ${id} not found`);
+        }
+        return category;
     }
-    async update(id, data) {
-        return this.prisma.category.update({ where: { id }, data });
+    async update(id, updateCategoryDto) {
+        const category = await this.findOne(id);
+        if (!category) {
+            throw new common_1.NotFoundException(`Category with ID ${id} not found`);
+        }
+        const checkExist = await this.prisma.category.findFirst({
+            where: {
+                id: { not: id },
+                name: updateCategoryDto.name,
+                type: updateCategoryDto.type,
+            },
+        });
+        if (checkExist) {
+            throw new common_1.BadRequestException(`Category with name ${updateCategoryDto.name} and type ${updateCategoryDto.type} already exists`);
+        }
+        return this.prisma.category.update({
+            where: { id: category.id },
+            data: updateCategoryDto,
+        });
     }
-    async delete(id) {
-        return this.prisma.category.delete({ where: { id } });
+    async remove(id) {
+        await this.findOne(id);
+        return this.prisma.category.delete({
+            where: { id },
+        });
     }
 };
 exports.CategoriesService = CategoriesService;

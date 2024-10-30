@@ -1,61 +1,54 @@
 import { SuppliersService } from './suppliers.service';
-import { CreateSupplierDto, UpdateSupplierDto } from './dto';
+import { UpdateSupplierDto } from './dto';
 export declare class SuppliersController {
     private readonly suppliersService;
     constructor(suppliersService: SuppliersService);
-    create(createSupplierDto: CreateSupplierDto): Promise<{
-        id: number;
-        name: string;
-        description: string;
-        email: string;
-        phone: string | null;
-        locationId: number;
-        userId: number | null;
-        createdAt: Date;
-        updatedAt: Date;
-    }>;
     findAll(): Promise<{
         id: number;
-        name: string;
-        description: string;
         email: string;
+        name: string;
         phone: string | null;
-        locationId: number;
-        userId: number | null;
         createdAt: Date;
         updatedAt: Date;
+        userId: number | null;
+        description: string;
+        categoryId: number;
+        locationId: number;
     }[]>;
     findOne(id: string): Promise<{
         id: number;
-        name: string;
-        description: string;
         email: string;
+        name: string;
         phone: string | null;
-        locationId: number;
-        userId: number | null;
         createdAt: Date;
         updatedAt: Date;
+        userId: number | null;
+        description: string;
+        categoryId: number;
+        locationId: number;
     }>;
     update(id: string, updateSupplierDto: UpdateSupplierDto): Promise<{
         id: number;
-        name: string;
-        description: string;
         email: string;
+        name: string;
         phone: string | null;
-        locationId: number;
-        userId: number | null;
         createdAt: Date;
         updatedAt: Date;
+        userId: number | null;
+        description: string;
+        categoryId: number;
+        locationId: number;
     }>;
     remove(id: string): Promise<{
         id: number;
-        name: string;
-        description: string;
         email: string;
+        name: string;
         phone: string | null;
-        locationId: number;
-        userId: number | null;
         createdAt: Date;
         updatedAt: Date;
+        userId: number | null;
+        description: string;
+        categoryId: number;
+        locationId: number;
     }>;
 }

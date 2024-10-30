@@ -4,8 +4,8 @@ export declare class EventsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(data: CreateEventDto): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -17,8 +17,8 @@ export declare class EventsService {
         locationId: number;
     }>;
     findAll(): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -30,8 +30,8 @@ export declare class EventsService {
         locationId: number;
     }[]>;
     findOne(id: number): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -43,8 +43,8 @@ export declare class EventsService {
         locationId: number;
     }>;
     update(id: number, data: Partial<CreateEventDto>): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         description: string;
@@ -56,8 +56,8 @@ export declare class EventsService {
         locationId: number;
     }>;
     delete(id: number): Promise<{
-        name: string;
         id: number;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         description: string;

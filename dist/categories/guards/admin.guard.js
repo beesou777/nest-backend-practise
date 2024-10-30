@@ -6,17 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoriesModule = void 0;
+exports.AdminGuard = void 0;
 const common_1 = require("@nestjs/common");
-const categories_service_1 = require("./categories.service");
-const categories_controller_1 = require("./categories.controller");
-let CategoriesModule = class CategoriesModule {
+const client_1 = require("@prisma/client");
+let AdminGuard = class AdminGuard {
+    canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+        return user && user.role === client_1.UserRole.ADMIN;
+    }
 };
-exports.CategoriesModule = CategoriesModule;
-exports.CategoriesModule = CategoriesModule = __decorate([
-    (0, common_1.Module)({
-        controllers: [categories_controller_1.CategoriesController],
-        providers: [categories_service_1.CategoriesService],
-    })
-], CategoriesModule);
-//# sourceMappingURL=categories.module.js.map
+exports.AdminGuard = AdminGuard;
+exports.AdminGuard = AdminGuard = __decorate([
+    (0, common_1.Injectable)()
+], AdminGuard);
+//# sourceMappingURL=admin.guard.js.map

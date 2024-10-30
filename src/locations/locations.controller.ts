@@ -7,9 +7,9 @@ export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
   @Post()
-  create(@Body() data: CreateLocationDto) {
-    return this.locationsService.create(data);
-  }
+  // create(@Body() data: CreateLocationDto) {
+  //   return this.locationsService.create(data);
+  // }
 
   @Get()
   findAll() {
